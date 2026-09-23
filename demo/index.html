@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!-- Created by Erion Nezha — © 2026 All rights reserved -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏧 ATM &mdash; Erion Nezha</title>
+<meta name="description" content="ATM bankar në C++ — regjistro llogari, shiko bilancin, depozito dhe tërhiq para. Ndërfaqja është tërësisht në shqip.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#ffc857;--gold-dim:#b98a1e;--bg:#0a0a10;--card:#12121a;--line:#23232f;--txt:#e8e6df;--mut:#9a9789;--blue:#7ee0ff}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
+.hero{text-align:center;padding:72px 20px 40px;background:radial-gradient(ellipse at 50% -50%,#2a2111 0%,transparent 60%)}
+.badge{display:inline-block;border:1px solid var(--gold-dim);color:var(--gold);border-radius:999px;padding:6px 18px;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-size:clamp(30px,5.5vw,56px);letter-spacing:2px;background:linear-gradient(180deg,#ffe9b0,var(--gold) 60%,#8a6410);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+.hero p{color:var(--mut);max-width:660px;margin:18px auto 0;line-height:1.7;font-size:16px}
+.stack{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.stack span{border:1px solid var(--line);background:var(--card);color:var(--blue);border-radius:8px;padding:6px 14px;font-size:13px;font-family:Consolas,monospace}
+.stats{display:flex;gap:14px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+.stat{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 26px}
+.stat b{color:var(--gold);font-size:24px;display:block}
+.stat span{color:var(--mut);font-size:12px;letter-spacing:1px;text-transform:uppercase}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 60px}
+.codecard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.codecard header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)}
+.codecard header h3{color:var(--gold);font-size:18px}
+.codecard header h3 small{color:var(--mut);font-weight:400}
+.codebox{overflow:auto;padding:20px 22px;max-height:70vh}
+pre{font-family:'Cascadia Code',Consolas,monospace;font-size:13px;line-height:1.65;counter-reset:ln}
+pre .row{display:block;white-space:pre}
+pre .row::before{counter-increment:ln;content:counter(ln);display:inline-block;width:44px;color:#4a4a58;text-align:right;margin-right:16px;user-select:none}
+.k{color:#ff7edb}.s{color:#ffc857}.c{color:#6a6a78;font-style:italic}.n{color:#7ee0ff}
+.codecard footer{display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--line)}
+.btn{flex:1;text-align:center;border-radius:10px;padding:10px;font-size:14px;cursor:pointer;text-decoration:none;transition:.2s;border:1px solid var(--gold-dim)}
+.btn.view{background:var(--gold);color:#111;font-weight:700;border-color:var(--gold)}
+.btn.gh{background:transparent;color:var(--gold)}
+.howto{max-width:960px;margin:0 auto 50px;padding:0 20px}
+.howto .box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px}
+.howto h2{color:var(--gold);margin-bottom:14px;font-size:20px}
+.howto ol{margin-left:20px;color:var(--mut);line-height:2;font-size:15px;list-style:none}
+.howto code{background:#0a0a10;border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--blue);font-family:Consolas,monospace;font-size:13px}
+footer.page{text-align:center;padding:34px 20px;border-top:1px solid var(--line);color:var(--mut);font-size:13px}
+footer.page a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="hero">
+<div class="badge">C++ &bull; Console App</div>
+<h1>ATM — SISTEMI BANKAR</h1>
+<p>ATM bankar në C++ — regjistro llogari, shiko bilancin, depozito dhe tërhiq para. Ndërfaqja është tërësisht në shqip.</p>
+<div class="stack"><span>C++</span><span>iostream</span></div>
+<div class="stats"><div class="stat"><b>121</b><span>Lines of code</span></div><div class="stat"><b>6</b><span>Menu options</span></div><div class="stat"><b>100%</b><span>C++</span></div></div>
+</div>
+<!-- Live terminal demo section (WASM) — included in the showcase page -->
+<section class="livedemo" id="live-demo">
+  <h2>▶ Live Demo — ekzekutohet vërtet në browser</h2>
+  <p class="livedemo-sub">Programi C++ është kompiluar në <b>WebAssembly</b> dhe ekzekutohet live këtu. Shkruaj në terminal si në console normale.</p>
+  <div class="term-wrap">
+    <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">ATM — terminal</span>
+      <button class="term-restart" onclick="location.reload()">⟳ Rifillo</button>
+    </div>
+    <div id="terminal"></div>
+  </div>
+  <p class="livedemo-note2">Kodi origjinal C++ nuk është ndryshuar — demo përdor një build WebAssembly të tij.</p>
+</section>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+<script>
+/* Module config must exist BEFORE atm.js loads (classic Emscripten build) */
+var __termInputQueue = [];
+var __termWake = null;
+function __stdinRead() {
+  if (__termInputQueue.length) return __termInputQueue.shift();
+  Asyncify.handleSleep(function (wakeUp) { __termWake = wakeUp; });
+  return __termInputQueue.shift();
+}
+var Module = {
+  preRun: [function () { FS.init(__stdinRead, null, null); }],
+  print: function (t) { window.__term.write(t + '\r\n'); },
+  printErr: function (t) { window.__term.write(t + '\r\n'); },
+  onRuntimeInitialized: function () { window.__term.write('\r\n\x1b[32m● Programi u ngarkua — shkruaj më poshtë.\x1b[0m\r\n'); }
+};
+</script>
+<script src="atm.js"></script>
+<script>
+(function () {
+  var term = new Terminal({ cursorBlink: true, fontSize: 14, fontFamily: 'Consolas, Menlo, monospace',
+    theme: { background: '#0a0a10', foreground: '#e8e6df', cursor: '#ffc857' } });
+  window.__term = term;
+  term.open(document.getElementById('terminal'));
+  term.write('\x1b[33mDuke ngarkuar programin…\x1b[0m\r\n');
+  var lineBuf = [];
+  term.onData(function (data) {
+    for (var i = 0; i < data.length; i++) {
+      var ch = data.charCodeAt(i);
+      if (ch === 13) { // Enter
+        term.write('\r\n');
+        lineBuf = [];
+        __termInputQueue.push(10);
+        if (__termWake) { var w = __termWake; __termWake = null; w(); }
+      } else if (ch === 127) { // Backspace
+        if (lineBuf.length) { lineBuf.pop(); __termInputQueue.pop(); term.write('\b \b'); }
+      } else if (ch >= 32) {
+        lineBuf.push(ch); __termInputQueue.push(ch); term.write(data[i]);
+      }
+    }
+    if (__termWake && __termInputQueue.length) { var w2 = __termWake; __termWake = null; w2(); }
+  });
+})();
+</script>
+<style>
+.livedemo{max-width:900px;margin:34px auto;padding:0 20px}
+.livedemo h2{color:var(--gold,#ffc857);letter-spacing:1px;margin-bottom:8px}
+.livedemo-sub{color:var(--mut,#9a9789);margin-bottom:16px;line-height:1.6}
+.term-wrap{border:1px solid #2f5f31;border-radius:12px;overflow:hidden;background:#0a0a10}
+.term-bar{display:flex;align-items:center;gap:8px;background:#14141c;padding:10px 14px;border-bottom:1px solid var(--line,#23232f)}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.term-title{color:var(--mut,#9a9789);font-size:13px;margin-left:6px;flex:1}
+.term-restart{background:transparent;border:1px solid var(--line,#23232f);color:var(--gold,#ffc857);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:12px}
+.term-restart:hover{border-color:var(--gold,#ffc857)}
+#terminal{height:420px;padding:8px}
+.livedemo-note2{color:var(--mut,#9a9789);font-size:12px;margin-top:10px}
+#terminal .xterm-viewport{overflow-y:auto}
+</style>
+
+<div class="wrap"><div class="codecard">
+<header><h3 id="ctitle"></h3></header>
+<div class="codebox"><pre id="ccode"></pre></div>
+<footer>
+<button class="btn view" id="copyBtn" onclick="copyCode()">📋 Copy code</button>
+<a class="btn gh" id="ghBtn" target="_blank" rel="noopener">View on GitHub ↗</a>
+</footer>
+</div></div>
+<div class="howto"><div class="box">
+<h2>▶ Si ekzekutohet / How to run</h2>
+<ol><li>Kompilo: <code>g++ ATM.cpp -o atm</code></li><li>Ekzekuto: <code>./atm</code></li></ol>
+</div></div>
+<footer class="page">Copyright &copy; 2026 <a href="https://github.com/ErionNezha">Erion Nezha</a>. All rights reserved.</footer>
+<script>
+const P = [{"n": 1, "file": "ATM.cpp", "title": "ATM.cpp", "desc": "ATM bankar n\u00eb C++ \u2014 regjistro llogari, shiko bilancin, depozito dhe t\u00ebrhiq para. Nd\u00ebrfaqja \u00ebsht\u00eb t\u00ebr\u00ebsisht n\u00eb shqip.", "cat": "Source", "lines": 121, "code": "// ============================================================\n//  ATM - Sistemi Bankar\n//  nga Erion Nezha (c) 2026. Te gjitha te drejtat te rezervuara.\n// ============================================================\n#include <iostream>\n#include <stdlib.h>\n#include <string.h>\nusing namespace std;\nclass Bank {\n \n    // Private variables used inside class\nprivate:\n    string name;\n    int accnumber;\n    char type[10];\n    int amount = 0;\n    int tot = 0;\n \n    // Public variables\npublic:\n    // Function to set the person's data\n    void setvalue()\n    {\n        cout << \"Shkruaj emrin\\n\";\n        cin.ignore();\n \n        // To use space in string\n        getline(cin, name);\n \n        cout << \"Shkruaj numrin e llogarise\\n\";\n        cin >> accnumber;\n        cout << \"Shkruaj llojin e llogarise\\n\";\n        cin >> type;\n        cout << \"Shkruaj bilancin\\n\";\n        cin >> tot;\n    }\n \n    // Function to display the required data\n    void showdata()\n    {\n        cout << \"Emri:\" << name << endl;\n        cout << \"Nr. llogarise:\" << accnumber << endl;\n        cout << \"Lloji i llogarise:\" << type << endl;\n        cout << \"Bilanci:\" << tot << endl;\n    }\n \n    // Function to deposit the amount in ATM\n    void deposit()\n    {\n        cout << \"\\nShkruaj shumen per depozite\\n\";\n        cin >> amount;\n    }\n \n    // Function to show the balance amount\n    void showbal()\n    {\n        tot = tot + amount;\n        cout << \"\\nBilanci total eshte: \" << tot;\n    }\n \n    // Function to withdraw the amount in ATM\n    void withdrawl()\n    {\n        int a, avai_balance;\n        cout << \"Shkruaj shumen per terheqje\\n\";\n        cin >> a;\n        avai_balance = tot - a;\n        cout << \"Bilanci i disponueshem eshte: \" << avai_balance;\n    }\n};\n \n// Driver Code\nint main()\n{\n    // Object of class\n    Bank b;\n \n    int choice;\n \n    // Infinite while loop to choose\n    // options everytime\n    while (1) {\n        cout << \"\\n~~~~~~~~~~~~~~~~~~~~~~~~~~\"\n             << \"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\"\n             << \"~~~MIRESEVINI~~~~~~~~~~~~~~~~\"\n             << \"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\"\n             << \"~~~~~~~~~\\n\\n\";\n        cout << \"Zgjidhni\\n\";\n        cout << \"\\t1. Shkruaj emrin, numrin dhe llojin e llogarise\\n\";\n        cout << \"\\t2. Shiko te dhenat\\n\";\n        cout << \"\\t3. Depozito para\\n\";\n        cout << \"\\t4. Shiko bilancin total\\n\";\n        cout << \"\\t5. Terhiq para\\n\";\n        cout << \"\\t6. Dil\\n\";\n        cin >> choice;\n \n        // Choices to select from\n        switch (choice) {\n        case 1:\n            b.setvalue();\n            break;\n        case 2:\n            b.showdata();\n            break;\n        case 3:\n            b.deposit();\n            break;\n        case 4:\n            b.showbal();\n            break;\n        case 5:\n            b.withdrawl();\n            break;\n        case 6:\n            exit(1);\n            break;\n        default:\n            cout << \"\\nZgjedhje e pavlefshme\\n\";\n        }\n    }\n}", "blob": "https://github.com/ErionNezha/ATM/blob/main/ATM.cpp"}];
+const p = P[0];
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function hl(code){
+  var re = new RegExp('("[^"\n]*")|(//[^\n]*|/\\*[\\s\\S]*?\\*/)|\\b(include|using|namespace|int|char|float|double|void|bool|return|if|else|for|while|do|switch|case|default|break|continue|goto|class|struct|public|private|new|delete|cout|cin|endl|std|string|exit)\\b|\\b(\\d+)\\b', 'g');
+  return esc(code).split('\n').map(function(line){
+    var out='', last=0, m; re.lastIndex=0;
+    while((m = re.exec(line))){
+      out += line.slice(last, m.index);
+      var tok = m[0];
+      if(m[1]) out += '<span class="s">'+tok+'</span>';
+      else if(m[2]) out += '<span class="c">'+tok+'</span>';
+      else if(m[3]) out += '<span class="k">'+tok+'</span>';
+      else if(m[4]) out += '<span class="n">'+tok+'</span>';
+      last = m.index + tok.length;
+      if(tok.length === 0) re.lastIndex++;
+    }
+    out += line.slice(last);
+    return '<span class="row">'+(out||' ')+'</span>';
+  }).join('');
+}
+document.getElementById('ctitle').innerHTML = esc(p.title)+' <small>'+esc(p.file)+' · '+p.lines+' lines</small>';
+document.getElementById('ccode').innerHTML = hl(p.code);
+document.getElementById('ghBtn').href = p.blob;
+function copyCode(){navigator.clipboard.writeText(p.code).then(function(){var b=document.getElementById('copyBtn');b.textContent='✅ Copied!';setTimeout(function(){b.textContent='📋 Copy code';},1500);});}
+</script>
+</body>
+</html>

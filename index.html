@@ -51,6 +51,79 @@ footer.page a{color:var(--gold);text-decoration:none}
 <div class="stack"><span>C++</span><span>iostream</span></div>
 <div class="stats"><div class="stat"><b>121</b><span>Lines of code</span></div><div class="stat"><b>6</b><span>Menu options</span></div><div class="stat"><b>100%</b><span>C++</span></div></div>
 </div>
+<!-- Live terminal demo section (WASM) — included in the showcase page -->
+<section class="livedemo" id="live-demo">
+  <h2>▶ Live Demo — ekzekutohet vërtet në browser</h2>
+  <p class="livedemo-sub">Programi C++ është kompiluar në <b>WebAssembly</b> dhe ekzekutohet live këtu. Shkruaj në terminal si në console normale.</p>
+  <div class="term-wrap">
+    <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">ATM — terminal</span>
+      <button class="term-restart" onclick="location.reload()">⟳ Rifillo</button>
+    </div>
+    <div id="terminal"></div>
+  </div>
+  <p class="livedemo-note2">Kodi origjinal C++ nuk është ndryshuar — demo përdor një build WebAssembly të tij.</p>
+</section>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.5.0/css/xterm.css">
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.5.0/lib/xterm.js"></script>
+<script>
+/* Module config must exist BEFORE atm.js loads (classic Emscripten build) */
+var __termInputQueue = [];
+var __termWake = null;
+function __stdinRead() {
+  if (__termInputQueue.length) return __termInputQueue.shift();
+  Asyncify.handleSleep(function (wakeUp) { __termWake = wakeUp; });
+  return __termInputQueue.shift();
+}
+var Module = {
+  preRun: [function () { FS.init(__stdinRead, null, null); }],
+  print: function (t) { window.__term.write(t + '\r\n'); },
+  printErr: function (t) { window.__term.write(t + '\r\n'); },
+  onRuntimeInitialized: function () { window.__term.write('\r\n\x1b[32m● Programi u ngarkua — shkruaj më poshtë.\x1b[0m\r\n'); }
+};
+</script>
+<script src="atm.js"></script>
+<script>
+(function () {
+  var term = new Terminal({ cursorBlink: true, fontSize: 14, fontFamily: 'Consolas, Menlo, monospace',
+    theme: { background: '#0a0a10', foreground: '#e8e6df', cursor: '#ffc857' } });
+  window.__term = term;
+  term.open(document.getElementById('terminal'));
+  term.write('\x1b[33mDuke ngarkuar programin…\x1b[0m\r\n');
+  var lineBuf = [];
+  term.onData(function (data) {
+    for (var i = 0; i < data.length; i++) {
+      var ch = data.charCodeAt(i);
+      if (ch === 13) { // Enter
+        term.write('\r\n');
+        lineBuf = [];
+        __termInputQueue.push(10);
+        if (__termWake) { var w = __termWake; __termWake = null; w(); }
+      } else if (ch === 127) { // Backspace
+        if (lineBuf.length) { lineBuf.pop(); __termInputQueue.pop(); term.write('\b \b'); }
+      } else if (ch >= 32) {
+        lineBuf.push(ch); __termInputQueue.push(ch); term.write(data[i]);
+      }
+    }
+    if (__termWake && __termInputQueue.length) { var w2 = __termWake; __termWake = null; w2(); }
+  });
+})();
+</script>
+<style>
+.livedemo{max-width:900px;margin:34px auto;padding:0 20px}
+.livedemo h2{color:var(--gold,#ffc857);letter-spacing:1px;margin-bottom:8px}
+.livedemo-sub{color:var(--mut,#9a9789);margin-bottom:16px;line-height:1.6}
+.term-wrap{border:1px solid #2f5f31;border-radius:12px;overflow:hidden;background:#0a0a10}
+.term-bar{display:flex;align-items:center;gap:8px;background:#14141c;padding:10px 14px;border-bottom:1px solid var(--line,#23232f)}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.term-title{color:var(--mut,#9a9789);font-size:13px;margin-left:6px;flex:1}
+.term-restart{background:transparent;border:1px solid var(--line,#23232f);color:var(--gold,#ffc857);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:12px}
+.term-restart:hover{border-color:var(--gold,#ffc857)}
+#terminal{height:420px;padding:8px}
+.livedemo-note2{color:var(--mut,#9a9789);font-size:12px;margin-top:10px}
+#terminal .xterm-viewport{overflow-y:auto}
+</style>
+
 <div class="wrap"><div class="codecard">
 <header><h3 id="ctitle"></h3></header>
 <div class="codebox"><pre id="ccode"></pre></div>
